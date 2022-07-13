@@ -1,5 +1,7 @@
 package com.revature.repository;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +28,12 @@ public class BookTests {
         Book testBook = new Book("test book title","test book author");
         Book result = bookDao.createBook(testBook);
         Assert.assertNotNull(result.getId());
+    }
+
+    @Test
+    public void getAllBooksPositiveTest(){
+        List<Book> bookList = bookDao.getAllBooks();
+        Assert.assertTrue(bookList.size() >= 2);
     }
     
 }

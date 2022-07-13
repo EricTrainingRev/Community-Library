@@ -25,8 +25,8 @@ public interface BookDAOInterface {
     */
     Book createBook(Book newBook); // at some point I will need to come back and decide on the parameters
 
-    // // reads
-    // List<Book> getAllBooks();
+    // reads
+    List<Book> getAllBooks();
 
     // // updates
     // Book updateBook(); // I will need to add an argument to this later
