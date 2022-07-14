@@ -23,14 +23,14 @@ public interface BookDAOInterface {
         title and the author name into the database. It can also hold the newly generated id and I can
         check it to make sure my method is working correctly.
     */
-    Book createBook(Book newBook); // at some point I will need to come back and decide on the parameters
+    Book createBook(Book newBook); 
 
     // reads
     List<Book> getAllBooks();
 
-    // // updates
-    // Book updateBook(); // I will need to add an argument to this later
+    // updates
+    Book updateBook(Book updatedBook); 
 
-    // // deletes
-    // boolean removeBook(); // I will need to add an argument
+    // deletes
+    boolean removeBook(Book bookToBeDeleted);
 }
