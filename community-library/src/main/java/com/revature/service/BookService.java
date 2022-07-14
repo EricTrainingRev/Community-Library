@@ -24,14 +24,30 @@ public class BookService implements BookServiceInterface {
 
     @Override
     public boolean checkBookForTolkien(Book bookToCheck) {
-        // TODO Auto-generated method stub
-        return false;
+        /*
+            This method is checking to see if the book being entered/updated is following business
+            rules: if it is, a true is returned because it is following the rules and the data can be
+            sent into the repository layer. If the book is not following business rules a false is 
+            returned and the data should NOT be sent to the repository layer
+        */
+
+        // make sure to use the equals method when comparing strings
+        if(bookToCheck.getAuthor().equals("J. R. R. Tolkien")){
+            // if the business rule is broken we return false
+            return false;
+        } else {
+            // if the business rule is being followed we return true
+            return true;
+        }
     }
 
     @Override
     public Book serviceCreateBook(Book newBook) {
-        // TODO Auto-generated method stub
-        return null;
+        if(this.checkBookForTolkien(newBook)){
+            return this.bookDao.createBook(newBook);
+        } else {
+            return null; // this is not a great option, I will want to switch it at some point
+        }
     }
 
     @Override
@@ -46,15 +62,18 @@ public class BookService implements BookServiceInterface {
 
     @Override
     public Book serviceUpdateBook(Book updatedBook) {
-        // TODO Auto-generated method stub
-        return null;
+        if(this.checkBookForTolkien(updatedBook)){
+            return this.bookDao.updateBook(updatedBook);
+        } else {
+            return null; // not a great option: will adjust when there is more time
+        }
     }
 
     @Override
     public boolean serviceRemoveBook(Book bookToBeDeleted) {
         /*
             because there are no business rules associated with this service method, and because we have 
-            already tested the getAllBooks method in the repository layer, we can skip writing any unit
+            already tested the removeBook method in the repository layer, we can skip writing any unit
             tests for this service method and just return the results of the dao method
         */
         return this.bookDao.removeBook(bookToBeDeleted);
