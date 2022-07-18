@@ -12,7 +12,7 @@ public interface BookServiceInterface {
         followed than I do not allow the data into the repository layer
     */
 
-    boolean checkBookForTolkien(Book bookToCheck);
+    // boolean checkBookForTolkien(Book bookToCheck); moved this method to the BusinessRules class in utils
 
     /*
         When you set up an application that has a repository layer and a service layer you want to have
