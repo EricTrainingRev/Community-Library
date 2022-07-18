@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.revature.entities.Book;
 import com.revature.repository.BookDAOInterface;
+import com.revature.utils.BusinessRules;
 
 public class BookService implements BookServiceInterface {
 
@@ -11,39 +12,27 @@ public class BookService implements BookServiceInterface {
         Because my service class is gate-keeping for the repository layer, it needs to have some way
         of sending data that has been validated to the repository layer. This is accomplished by using 
         dependency injection: I create a field of the proper data access object interface, and then I used
-        the consutrctor at runtime to create the proper implementation object for said interface.
+        the consutrctor at runtime to create the proper implementation object for said interface. I also decided
+        to add an extra field for a BusinessRules class, which will store all my business rule methods. By
+        seperating the validation checks from the service methods themselves I am able to reuse the same code
+        in multiple locations, should the need arise
     */
+
+    // this dao is found in the repository package
     private BookDAOInterface bookDao;
+    // this BusinessRules class can be seen in the utils package
+    private BusinessRules businessRules;
 
-    public BookService(BookDAOInterface bookDao){
-        // the bookDao field is part of the object scope, so make sure to use the this keyword
+    public BookService(BookDAOInterface bookDao, BusinessRules businessRules){
+        // the bookDao and businessRules fields are part of the object scope, so make sure to use the this keyword
         this.bookDao = bookDao;
-    }
-
-
-
-    @Override
-    public boolean checkBookForTolkien(Book bookToCheck) {
-        /*
-            This method is checking to see if the book being entered/updated is following business
-            rules: if it is, a true is returned because it is following the rules and the data can be
-            sent into the repository layer. If the book is not following business rules a false is 
-            returned and the data should NOT be sent to the repository layer
-        */
-
-        // make sure to use the equals method when comparing strings
-        if(bookToCheck.getAuthor().equals("J. R. R. Tolkien")){
-            // if the business rule is broken we return false
-            return false;
-        } else {
-            // if the business rule is being followed we return true
-            return true;
-        }
+        this.businessRules = businessRules;
     }
 
     @Override
     public Book serviceCreateBook(Book newBook) {
-        if(this.checkBookForTolkien(newBook)){
+        // the businessRules object contains the method that checks whether the new book is valid or not
+        if(this.businessRules.checkBookForTolkien(newBook)){
             return this.bookDao.createBook(newBook);
         } else {
             return null; // this is not a great option, I will want to switch it at some point
@@ -62,7 +51,8 @@ public class BookService implements BookServiceInterface {
 
     @Override
     public Book serviceUpdateBook(Book updatedBook) {
-        if(this.checkBookForTolkien(updatedBook)){
+        // the businessRules object contains the method that checks whether the new book is valid or not
+        if(this.businessRules.checkBookForTolkien(updatedBook)){
             return this.bookDao.updateBook(updatedBook);
         } else {
             return null; // not a great option: will adjust when there is more time
@@ -78,5 +68,21 @@ public class BookService implements BookServiceInterface {
         */
         return this.bookDao.removeBook(bookToBeDeleted);
     }
+
+    /*
+        SEE THE SECTION BELOW TO GET EXAMPLES OF HOW MOCKING/STUBBING WORKS, AND HOW YOU CAN DO POSITIVE/NEGATIVE
+        TESTS FOR YOUR SERVICE LAYER
+    */
+
+    /*
+        While your projects only require negative tests for any business logic your service layer must validate,
+        it is unreasonable to think that you will only ever need to make negative tests in your servie layer. Any
+        complex application will have multiple checks and possible return values in a service layer, and often times
+        you will need to make positve/negative tests for all the possibilities. This is where Mocking comes into play.
+        
+        Mocking is a process of creating classes that you controll the return value of: by pre-determing the return
+        values of methods you are not trying to test (this is called stubbing) you can check specific pieces of
+        functionality in your code, and therefore create true unit tests in your service layer
+    */
     
 }
