@@ -3,6 +3,7 @@ package com.revature.service;
 import java.util.List;
 
 import com.revature.entities.Book;
+import com.revature.exceptions.InvalidBook;
 import com.revature.repository.BookDAOInterface;
 import com.revature.utils.BusinessRules;
 
@@ -35,7 +36,12 @@ public class BookService implements BookServiceInterface {
         if(this.businessRules.checkBookForTolkien(newBook)){
             return this.bookDao.createBook(newBook);
         } else {
-            return null; // this is not a great option, I will want to switch it at some point
+            /*
+                here we create an InvalidBook object and we use the throw keyword to tell Java to throw an exception
+                of this type. This exception will need to be handled in our API, and it will inform the API that
+                an error message needs to be returned to the user
+            */
+            throw new InvalidBook("invalid book: please try again");
         }
     }
 
@@ -55,7 +61,7 @@ public class BookService implements BookServiceInterface {
         if(this.businessRules.checkBookForTolkien(updatedBook)){
             return this.bookDao.updateBook(updatedBook);
         } else {
-            return null; // not a great option: will adjust when there is more time
+            throw new InvalidBook("invalid book: please try again");
         }
     }
 

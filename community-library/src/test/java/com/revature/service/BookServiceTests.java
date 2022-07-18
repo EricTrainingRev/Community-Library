@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.revature.entities.Book;
+import com.revature.exceptions.InvalidBook;
 import com.revature.repository.BookDAO;
 import com.revature.repository.BookDAOInterface;
 import com.revature.utils.BusinessRules;
@@ -99,16 +100,30 @@ public class BookServiceTests {
         Assert.assertNotNull(result.getId());
     }
 
+    /*
+        When testing for exceptions, an easy way to validate you have the correct exception is to check that
+        the exception message is correct. You will need to use a try/catch block for this
+    */
+
     @Test
     public void mockExampleCreateBookNegative(){
-        Book badBook = new Book("The Fellowship of the Ring","J. R. R. Tolkien");
-        /*
-            for this negative test I don't need to mock the results of the dao because the dao should never be
-            reached with this test
-        */
-        Mockito.when(mockRules.checkBookForTolkien(badBook)).thenReturn(false);
-        Book result = serviceWithMocks.serviceCreateBook(badBook);
-        Assert.assertEquals(null, result);
+        try{
+            Book badBook = new Book("The Fellowship of the Ring","J. R. R. Tolkien");
+            /*
+                for this negative test I don't need to mock the results of the dao because the dao should never be
+                reached with this test
+            */
+            Mockito.when(mockRules.checkBookForTolkien(badBook)).thenReturn(false);
+
+            // the serviceCreateBook method below SHOULD, based on the input, throw the InvalidBook exception
+            Book result = serviceWithMocks.serviceCreateBook(badBook);
+            // if no exception is thrown by the serviceCreateBook method then the line below will make our test fail
+            Assert.fail();          
+        } catch(InvalidBook e){
+            // here we check that we get both the expected exception and the correct message
+            Assert.assertEquals("invalid book: please try again", e.getMessage());
+        }
+
     }
 
     @Test
@@ -122,10 +137,16 @@ public class BookServiceTests {
 
     @Test
     public void mockExampleUpdateBookNegative(){
-        Book badBook = new Book("The Fellowship of the Ring","J. R. R. Tolkien");
-        Mockito.when(mockRules.checkBookForTolkien(badBook)).thenReturn(false);
-        Book result = serviceWithMocks.serviceUpdateBook(badBook);
-        Assert.assertEquals(null, result);
+        try{
+            Book badBook = new Book("The Fellowship of the Ring","J. R. R. Tolkien");
+            Mockito.when(mockRules.checkBookForTolkien(badBook)).thenReturn(false);
+            Book result = serviceWithMocks.serviceUpdateBook(badBook);
+            Assert.fail();
+        } catch(InvalidBook e){
+            // the getMessage() method comes from the parent Exception class
+            Assert.assertEquals("invalid book: please try again", e.getMessage());
+        }
+
     }
     
 }
