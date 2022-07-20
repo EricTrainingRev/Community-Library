@@ -32,6 +32,11 @@ public class Main {
         BookServiceInterface bookService = new BookService(bookDao, businessRules);
         BookController bookController = new BookController(bookService);
 
+        /*
+            the code below is used to "expose" these endpoints so that users can "consume" them. Any hhtp
+            requests that don't use the resources and path parameters listed below will be rejected by the system.
+        */
+
 
         app.get("/hello", bookController.getHelloWorld);
 
@@ -40,15 +45,18 @@ public class Main {
             more about tomorrow
         */
 
-        app.get("/book", bookController.getAllBooks);
+        // book here indicates the resource this http request works with
+        app.get("/book", bookController.getAllBooks); // this is fine, does not need an identifier
 
-        app.delete("/book", bookController.deleteBook);
+        // the id inside the {} is called a path parameter: I can use the ctx in the controller to access it
+        app.delete("/book/{id}", bookController.deleteBook); 
 
-        app.patch("/book", bookController.updateBook);
+        app.patch("/book/{id}", bookController.updateBook); 
 
+        // despite working with an individual resource, this route does not need an identifier because the identifier will be created in the course of this endpoint being consumed
         app.post("/book", bookController.createBook);
 
-        app.start();
+        app.start(); // this actually starts our web server so it can listen for http requests
 
     }
     
