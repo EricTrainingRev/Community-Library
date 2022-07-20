@@ -37,6 +37,7 @@ public class BookController {
     public Handler getHelloWorld = ctx -> {
         ctx.result("Hello world!");
         ctx.status(200);
+
     };
 
     public Handler getAllBooks = ctx -> {
@@ -59,6 +60,10 @@ public class BookController {
         String json = ctx.body();
         // we then use Gson to convert the json string into the java class we are working with
         Book bookToDelete = this.gson.fromJson(json, Book.class);
+        // to make sure that I am updating the book that I indicated in the http request I set the path id to the id of the book
+        String identifier = ctx.pathParam("id");
+        int bookId = Integer.parseInt(identifier);
+        bookToDelete.setId(bookId);
         // we then pass the java object we created into the appropriate service method for validation
         this.bookService.serviceRemoveBook(bookToDelete);
         // because I am not returning any special entity with this method I will use a Map to create my key/value pair message for the json
@@ -68,7 +73,7 @@ public class BookController {
         String messageJson = this.gson.toJson(message);
         // then we attach it to the response body and set the status code
         ctx.result(messageJson);
-        ctx.status(203); // will need to double check status code at some point
+        ctx.status(200); // will need to double check status code at some point
     };
 
     public Handler updateBook = ctx -> {
@@ -77,6 +82,8 @@ public class BookController {
             String json = ctx.body();
             // convert json to our java object
             Book updatedBook = this.gson.fromJson(json, Book.class);
+            // this does the same process of getting the id from the path and setting it as the id of the updated book
+            updatedBook.setId(Integer.parseInt(ctx.pathParam("id")));
             // pass the data into the service layer and get method result back
             Book result = this.bookService.serviceUpdateBook(updatedBook);
             // convert the result into a json
