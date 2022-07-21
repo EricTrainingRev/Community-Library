@@ -21,6 +21,7 @@
     <input type="text" id="titleEdit" placeholder="title edit goes here">
     <input type="text" id="authorEdit" placeholder="author edit goes here">
     <button id="confirmButton" onclick="updateBook()">confirm update</button>
+
 </body>
 <script>
     const tbody = document.getElementById("tbody");
@@ -76,6 +77,14 @@
             idOption.textContent = book.id;
             idSelect.appendChild(idOption);
         }
+        let newRow = document.createElement("tr");
+        newRow.innerHTML = `
+        <td>Create a book here!</td>
+        <td><input type="text" id="newTitle" placeholder="title goes here"></td>
+        <td><input type="text" id="newAuthor" placeholder="author goes here"></td>
+        <td><button onclick="createBook()">add book!</button></td>
+        `;
+        tbody.appendChild(newRow);
     } else {
         alert("something went wrong, could not access library books");
         }
@@ -135,6 +144,35 @@
             let body = await httpResponse.json();
             alert(body.message);
         }
+    }
+
+    async function createBook(){
+        let newBookObject = {
+            title: document.getElementById("newTitle").value,
+            author: document.getElementById("newAuthor").value
+        }
+
+        let newBookJSON = JSON.stringify(newBookObject);
+
+        let config = {
+            method: "POST",
+            headers:{"Content-Type":"application/json"},
+            body: newBookJSON
+        };
+
+        let httpResponse = await fetch(`${baseURL}book`,config);
+
+        if(httpResponse.status === 201){
+            alert("thank you for providing the book!")
+            getAllBooks();
+        } else if (httpResponse.status === 400){
+            let body = await httpResponse.json();
+            alert(body.message);
+        } else {
+            alert("something went wrong: please try again");
+        }
+
+
     }
 
 
