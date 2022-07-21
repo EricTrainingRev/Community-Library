@@ -6,6 +6,7 @@ import com.revature.repository.BookDAOInterface;
 import com.revature.service.BookService;
 import com.revature.service.BookServiceInterface;
 import com.revature.utils.BusinessRules;
+import com.revature.utils.HibernateUtil;
 
 import io.javalin.Javalin;
 
@@ -13,6 +14,9 @@ public class Main {
 
     // reminder: the main method is the entry point for your application
     public static void main(String[] args) {
+
+        // I create my SessionFactory before starting the web server so there is no initial delay
+        HibernateUtil.getSessionFactory();
         
         // inside of the create method we call a lambda that Javalin can use to configure our web server
         Javalin app = Javalin.create(config ->{

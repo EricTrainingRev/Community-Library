@@ -60,14 +60,16 @@
                 set innerHTML of the new row element with the information from the book
                 append the row element to the table body
         */
-        const books = await httpResponse.json();
+        let books = await httpResponse.json();
+        // added this to make E2E tests easier
+        books.sort(function(a,b){return a.id-b.id});
         for(let book of books){
             let newRow = document.createElement("tr");
             newRow.innerHTML = `
-                <td>${book.id}</td>
+                <td id="bookId${book.id}">${book.id}</td>
                 <td>${book.title}</td>
                 <td>${book.author}</td>
-                <td><button onclick="removeBook(${book.id},'${book.title}','${book.author}')">take book</button></td>
+                <td><button id="${book.id}" onclick="removeBook(${book.id},'${book.title}','${book.author}')">take book</button></td>
             `;
             tbody.appendChild(newRow);
 
@@ -75,6 +77,7 @@
             let idOption = document.createElement("option");
             idOption.value = book.id;
             idOption.textContent = book.id;
+            idOption.id = `option${book.id}`;
             idSelect.appendChild(idOption);
         }
         let newRow = document.createElement("tr");
@@ -82,7 +85,7 @@
         <td>Create a book here!</td>
         <td><input type="text" id="newTitle" placeholder="title goes here"></td>
         <td><input type="text" id="newAuthor" placeholder="author goes here"></td>
-        <td><button onclick="createBook()">add book!</button></td>
+        <td><button id="createButton" onclick="createBook()">add book!</button></td>
         `;
         tbody.appendChild(newRow);
     } else {
