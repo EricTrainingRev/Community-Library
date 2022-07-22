@@ -29,6 +29,7 @@ public class GiveBookSteps {
     public void the_user_should_see_an_alert_saying_he_has_successfully_added_a_book_to_the_library() {
         TestRunner.wait.until(ExpectedConditions.alertIsPresent());
         String result = TestRunner.libraryPage.getAlertText();
+        TestRunner.wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[@id='bookId-1']")));
         Assert.assertEquals("thank you for providing the book!", result);
     }
     

@@ -2,6 +2,7 @@ Feature: Users should be able to interact with the community library
 
     Background: users should be on the library home page
         Given   The user is on the community library home page
+        
     Scenario: As a user I want to take a book so I can read
         # Given   The user is on the community library home page
         When    The user clicks on the take button for the book he wants to take
